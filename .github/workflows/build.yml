@@ -16,7 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Extract zip
-        run: unzip -q *.zip
+        run: |
+          for z in *.zip; do unzip -oq "$z"; done
       - name: Setup Rust
         run: rustup update stable
       - name: Install cargo ndk
@@ -25,10 +26,10 @@ jobs:
         run: rustup target add ${{ matrix.target }}
       - name: Build
         run: |
-          cd mtbinloader2-0.1.17
+          cd "$(dirname "$(find . -name Cargo.toml | head -n 1)")"
           cargo ndk -t ${{ matrix.target }} build --profile githubci
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: mtbinloader2-${{ matrix.target }}
-          path: mtbinloader2-0.1.17/target/${{ matrix.target }}/githubci/libmtbinloader2.so
+          path: "**/target/${{ matrix.target }}/githubci/libmtbinloader2.so"
