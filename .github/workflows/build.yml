@@ -10,11 +10,13 @@ jobs:
       matrix:
         target:
           - aarch64-linux-android
-          - x86_64-linux-android
           - armv7-linux-androideabi
+          - x86_64-linux-android
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Extract zip
+        run: unzip -q *.zip
       - name: Setup Rust
         run: rustup update stable
       - name: Install cargo ndk
@@ -22,9 +24,11 @@ jobs:
       - name: Install target
         run: rustup target add ${{ matrix.target }}
       - name: Build
-        run: cargo ndk -t ${{ matrix.target }} build --profile githubci
+        run: |
+          cd mtbinloader2-*
+          cargo ndk -t ${{ matrix.target }} build --profile githubci
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: mtbinloader2-${{ matrix.target }}
-          path: target/${{ matrix.target }}/githubci/libmtbinloader2.so
+          path: mtbinloader2-*/target/${{ matrix.target }}/githubci/libmtbinloader2.so
