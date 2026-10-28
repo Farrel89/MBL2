@@ -25,10 +25,10 @@ jobs:
         run: rustup target add ${{ matrix.target }}
       - name: Build
         run: |
-          cd mtbinloader2-*
+          cd mtbinloader2-0.1.17
           cargo ndk -t ${{ matrix.target }} build --profile githubci
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: mtbinloader2-${{ matrix.target }}
-          path: mtbinloader2-*/target/${{ matrix.target }}/githubci/libmtbinloader2.so
+          path: mtbinloader2-0.1.17/target/${{ matrix.target }}/githubci/libmtbinloader2.so
